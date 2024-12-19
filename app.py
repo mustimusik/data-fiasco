@@ -9,7 +9,6 @@ from google.oauth2 import service_account
 st.title("Input Data to Database")
 
 def open_google_sheet(sheet_title, worksheet_title):
-# secret_dict = ast.literal_eval(userdata.get('SECRET'))
   secret_dict = st.secrets["CREDENTIALS"]
 
   SCOPES = ('https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive')
@@ -167,12 +166,40 @@ def preprocess_nomor(nomor):
     result = '62' + result
   return result
 
+def insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction):
+  events = event_log.merge(event_list, on="id_event")
+  events = events[events.columns[:-1]]
+  user_log = user.merge(events, on="id_user", validate="one_to_many")
+
+  user_transaction = user_log.merge(event_transaction, on="id_log", how="left")
+  user_transaction["nominal"] = user_transaction["nominal"].map(get_only_num)
+  user_transaction["buyer"] = "buyer"
+  user_transaction.loc[user_transaction["diskon"].isna(), "buyer"] = "tidak"
+
+  write_to_worksheet(visualization_worksheet, user_transaction)
+
+  return user_transaction
+
+def get_only_num(number):
+  number = str(number)
+  if number == "nan":
+    return 0
+  cleaned_number = re.sub('\D', '', number)
+  # converted_number = int(cleaned_number)
+  return cleaned_number
+
+def preprocess_buyer(row):
+  if str(row["diskon"]) == "nan":
+    row["buyer"] = "tidak"
+  return row
+
 def main():
   password = st.text_input("Enter a password", type="password")
   if password == st.secrets["PASSWORD"]:
     sheet_title = "Data Free Class & Bootcamp"
     free_class = "FREE CLASS 2024"
     bootcamp = "BOOTCAMP 2024"
+    visualization_title = "Data Free Class & Bootcamp for Visualization"
     worksheet_titles = ['event_list', 'user', 'event_log', 'event_transaction', 'registered_user', 'unregistered_user', 'data_member_terbaru']
     
     event_list_worksheet = open_google_sheet(sheet_title, worksheet_titles[0])
@@ -209,6 +236,7 @@ def main():
       registered_user_worksheet = open_google_sheet(sheet_title, worksheet_titles[4])
       unregistered_user_worksheet = open_google_sheet(sheet_title, worksheet_titles[5])
       data_member_terbaru_worksheet = open_google_sheet(sheet_title, worksheet_titles[6])
+      visualization_worksheet = open_google_sheet(visualization_title, "Sheet1")
       
       user = read_worksheet(user_worksheet)
       event_log = read_worksheet(event_log_worksheet)
@@ -216,6 +244,7 @@ def main():
       registered_user = read_worksheet(registered_user_worksheet)
       unregistered_user = read_worksheet(unregistered_user_worksheet)
       data_member_terbaru = read_worksheet(data_member_terbaru_worksheet)
+      visualization = read_worksheet(visualization_worksheet)
       
       bar.progress(20, text="input to event list")
       insert_to_event(event_list_worksheet, event_list, jenis_event, tanggal_event)
@@ -241,6 +270,8 @@ def main():
       
         bar.progress(90, text="input to registered_user")
         insert_to_registered_user(registered_user_worksheet, registered_user, data_member_terbaru, buyer, user)
+        
+      insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction)
       bar.progress(100, text="completed")
       bar.empty()
       st.write("Done")
