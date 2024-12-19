@@ -193,6 +193,14 @@ def preprocess_buyer(row):
     row["buyer"] = "tidak"
   return row
 
+def insert_to_unregisted_user(unregistered_user_worksheet, user, event_log, event_transaction):
+  unregist = user.merge(event_log, on='id_user', how='left').merge(event_transaction, on="id_log", how="left")
+  unregist = unregist[unregist['id_transaction'].isna()].drop_duplicates(subset="id_user")
+  unregist = unregist[user.columns]
+  write_to_worksheet(unregistered_user_worksheet, unregist)
+
+  return unregist
+
 def main():
   password = st.text_input("Enter a password", type="password")
   if password == st.secrets["PASSWORD"]:
@@ -270,7 +278,8 @@ def main():
       
         bar.progress(90, text="input to registered_user")
         insert_to_registered_user(registered_user_worksheet, registered_user, data_member_terbaru, buyer, user)
-        
+
+      insert_to_unregisted_user(unregistered_user_worksheet, user, event_log, event_transaction)
       insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction)
       bar.progress(100, text="completed")
       bar.empty()
