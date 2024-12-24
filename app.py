@@ -41,7 +41,7 @@ def insert_to_user(user_worksheet, user, new_user):
   end = len(user) + len(new_user)
   if len(user) != 0:
     start = user['id_user'].values.max()+1
-    end += 1
+    end = start + len(new_user)
   id_new_user = range(start, end)
 
   new_user = new_user.copy()
@@ -70,7 +70,7 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
   end = len(event_log) + len(merged)
   if len(event_log) != 0:
     start = event_log['id_log'].values.max()+1
-    end += 1
+    end = start + len(merged)
   new_id_log = range(start, end)
   sources = ['WA' if x == 'WhatsApp' else x.upper() for x in sources]
   new_id_user = merged['id_user'].values.tolist()
@@ -100,10 +100,10 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
   start = 0
-  end = lewn(event_transaction) + len(buyer)
+  end = len(event_transaction) + len(buyer)
   if len(event_transaction) != 0:
     start = event_transaction['id_transaction'].values.max()+1
-    end += 1
+    end = start + len(buyer)
   new_id_transaction = range(start, end)
   new_id_log = merged_2[['id_log']].values.reshape(-1)
   new_paket = merged_2[['paket']].values.reshape(-1)
