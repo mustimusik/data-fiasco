@@ -96,8 +96,10 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged['id_user'] = merged['id_user'].astype('int64')
 
   merged_2 = merged.merge(event_log, on='id_user', how='left')
+  last_event_index = event_log[['id_event']].loc[-1].values[0]
+  merged_2 = merged_2[merged_2['id_event']==last_event_index]
   print(len(merged_2))
-  merged_2.drop_duplicates(subset=['id_user'], keep='last', inplace=True)
+  # merged_2.drop_duplicates(subset=['id_user'], keep='last', inplace=True)
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
   start = 0
