@@ -97,13 +97,13 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   start = 0
   if len(event_transaction) != 0:
     start = event_transaction['id_transaction'].values.max()+1
-  new_id_transaction = range(start, start+1 + len(buyer))
+  new_id_transaction = range(start, start + len(buyer))
   new_id_log = merged_2[['id_log']].values.reshape(-1)
   new_paket = merged_2[['paket']].values.reshape(-1)
   new_paket = [x.upper() for x in new_paket]
   new_nominal = merged_2[['nominal']].values.reshape(-1)
   new_diskon = merged_2[['diskon']].values.reshape(-1)
-  print(len(new_id_transaction), len(new_id_log), len(new_paket), len(new_nominal), len(new_diskon))
+
   new_transaction = pd.DataFrame({
     'id_transaction':new_id_transaction,
     'id_log':new_id_log,
