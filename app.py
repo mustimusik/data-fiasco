@@ -120,7 +120,7 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
 
 def insert_to_registered_user(registered_user_worksheet, registered_user, data_member_terbaru, buyer, user):
   data_member_terbaru_filtered = data_member_terbaru[['user_email', 'user_registered_merge', 'user_expired_merge']].copy()
-  new_registered_user = buyer.merge(user, on='email_user', how='left').merge(registered_user, left_on='email_user', right_on='email', how='left').copy()[['id', 'email_user', 'nomor_user_x', 'created_at', 'expired_at']]
+  new_registered_user = buyer.merge(user, on='email_user', how='left').merge(data_member_terbaru_filtered, left_on='email_user', right_on='user_email', how='left').copy()[['id', 'email_user', 'nomor_user_x', 'created_at', 'expired_at']]
   new_registered_user.columns=['id', 'email', 'nomor', 'created_at', 'expired_at']
   new_registered_user_merged = pd.concat([registered_user, new_registered_user], axis=0, ignore_index=True)
   new_registered_user_merged['nomor'] = new_registered_user_merged['nomor'].map(preprocess_nomor)
