@@ -37,7 +37,10 @@ def insert_to_event(event_list_worksheet, event_list, jenis_event, tanggal_event
   return new_event_list
 
 def insert_to_user(user_worksheet, user, new_user):
-  id_new_user = range(user['id_user'].values.max(), len(user) + len(new_user))
+  start = 0
+  if len(user) != 0:
+    start = user['id_user'].values.max()+1
+  id_new_user = range(start, len(user) + len(new_user))
 
   new_user = new_user.copy()
   user = user.copy()
@@ -61,8 +64,10 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
   id_event = event_list[event_list['tanggal_event'] == tanggal_event]['id_event'].values[0]
 
   sources = merged['source'].values.tolist()
-
-  new_id_log = range(event_log['id_log'].values.max()+1, event_log['id_log'].values.max()+1 + len(merged))
+  start = 0
+  if len(event_log) != 0:
+    start = event_log['id_log'].values.max()+1
+  new_id_log = range(start, start + len(merged))
   sources = ['WA' if x == 'WhatsApp' else x.upper() for x in sources]
   new_id_user = merged['id_user'].values.tolist()
   new_event_log = pd.DataFrame({
@@ -89,8 +94,10 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged_2.drop_duplicates(subset=['id_user'], keep='last', inplace=True)
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
-
-  new_id_transaction = range(event_transaction['id_transaction'].values.max()+1, event_transaction['id_transaction'].values.max() + len(buyer)+1)
+  start = 0
+  if len(event_transaction) != 0:
+    start = event_transaction['id_transaction'].values.max()+1
+  new_id_transaction = range(start, start+1 + len(buyer))
   new_id_log = merged_2[['id_log']].values.reshape(-1)
   new_paket = merged_2[['paket']].values.reshape(-1)
   new_paket = [x.upper() for x in new_paket]
