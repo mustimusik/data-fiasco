@@ -67,7 +67,7 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
 
   sources = merged['source'].values.tolist()
   start = 0
-  end = start + len(merged)
+  end = len(event_log) + len(merged)
   if len(event_log) != 0:
     start = event_log['id_log'].values.max()+1
     end += 1
@@ -100,7 +100,7 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
   start = 0
-  end = start + len(buyer)
+  end = lewn(event_transaction) + len(buyer)
   if len(event_transaction) != 0:
     start = event_transaction['id_transaction'].values.max()+1
     end += 1
