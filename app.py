@@ -38,9 +38,11 @@ def insert_to_event(event_list_worksheet, event_list, jenis_event, tanggal_event
 
 def insert_to_user(user_worksheet, user, new_user):
   start = 0
+  end = len(user) + len(new_user)
   if len(user) != 0:
     start = user['id_user'].values.max()+1
-  id_new_user = range(start, len(user) + len(new_user))
+    end += 1
+  id_new_user = range(start, end)
 
   new_user = new_user.copy()
   user = user.copy()
@@ -65,9 +67,11 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
 
   sources = merged['source'].values.tolist()
   start = 0
+  end = start + len(merged)
   if len(event_log) != 0:
     start = event_log['id_log'].values.max()+1
-  new_id_log = range(start, start + len(merged))
+    end += 1
+  new_id_log = range(start, end)
   sources = ['WA' if x == 'WhatsApp' else x.upper() for x in sources]
   new_id_user = merged['id_user'].values.tolist()
   new_event_log = pd.DataFrame({
@@ -95,9 +99,11 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
   start = 0
+  end = start + len(buyer)
   if len(event_transaction) != 0:
     start = event_transaction['id_transaction'].values.max()+1
-  new_id_transaction = range(start, start + len(buyer))
+    end += 1
+  new_id_transaction = range(start, end)
   new_id_log = merged_2[['id_log']].values.reshape(-1)
   new_paket = merged_2[['paket']].values.reshape(-1)
   new_paket = [x.upper() for x in new_paket]
