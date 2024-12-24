@@ -74,7 +74,7 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
   new_id_log = range(start, end)
   sources = ['WA' if x == 'WhatsApp' else x.upper() for x in sources]
   new_id_user = merged['id_user'].values.tolist()
-  print(start, end, len(new_id_log), len(new_id_user), len(sources))
+  
   new_event_log = pd.DataFrame({
     'id_log':new_id_log,
     'id_user':new_id_user,
@@ -96,6 +96,7 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   merged['id_user'] = merged['id_user'].astype('int64')
 
   merged_2 = merged.merge(event_log, on='id_user', how='left')
+  print(len(merged_2))
   merged_2.drop_duplicates(subset=['id_user'], keep='last', inplace=True)
   merged_2['id_log'].fillna(-1, inplace=True)
   merged_2['id_log'] = merged_2['id_log'].astype('int64')
@@ -110,6 +111,7 @@ def insert_to_event_transaction(event_transaction_worksheet, event_transaction, 
   new_paket = [x.upper() for x in new_paket]
   new_nominal = merged_2[['nominal']].values.reshape(-1)
   new_diskon = merged_2[['diskon']].values.reshape(-1)
+  print(len(merged_2))
   print(start, end, len(new_id_transaction), len(new_id_log), len(new_paket), len(new_nominal), len(new_diskon))
   new_transaction = pd.DataFrame({
     'id_transaction':new_id_transaction,
