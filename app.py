@@ -74,6 +74,7 @@ def insert_to_event_log(event_log_worksheet, event_list, event_log, user, new_us
   new_id_log = range(start, end)
   sources = ['WA' if x == 'WhatsApp' else x.upper() for x in sources]
   new_id_user = merged['id_user'].values.tolist()
+  print(start, end, len(new_id_log), len(new_id_user), len(sources))
   new_event_log = pd.DataFrame({
     'id_log':new_id_log,
     'id_user':new_id_user,
