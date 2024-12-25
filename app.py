@@ -188,7 +188,7 @@ def preprocess_nomor(nomor):
 def insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction):
   events = event_log.merge(event_list, on="id_event")
   # events = events[events.columns[:-1]]
-  print(len(events))
+  print("viz", len(events))
   user_log = user.merge(events, on="id_user", validate="one_to_many")
   print(len(user_log))
   user_transaction = user_log.merge(event_transaction, on="id_log", how="left")
@@ -300,6 +300,7 @@ def main():
         insert_to_registered_user(registered_user_worksheet, registered_user, data_member_terbaru, buyer, user)
 
       insert_to_unregisted_user(unregistered_user_worksheet, user, event_log, event_transaction)
+      bar.progress(95, text="insert to visualization")
       insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction)
       bar.progress(100, text="completed")
       bar.empty()
