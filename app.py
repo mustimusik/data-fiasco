@@ -190,7 +190,10 @@ def insert_to_visualization(visualization_worksheet, user, event_log, event_list
   # events = events[events.columns[:-1]]
   user_log = user.merge(events, on="id_user", validate="one_to_many")
   st.write(len(user_log))
+  st.write(len(user_log.columns))
   user_transaction = user_log.merge(event_transaction, on="id_log", how="left")
+  st.write(len(user_transaction))
+  st.write(len(user_transaction.columns))
   user_transaction["nominal"] = user_transaction["nominal"].map(get_only_num)
   user_transaction["buyer"] = "buyer"
   user_transaction.loc[user_transaction["diskon"].isna(), "buyer"] = "tidak"
