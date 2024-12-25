@@ -188,8 +188,9 @@ def preprocess_nomor(nomor):
 def insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction):
   events = event_log.merge(event_list, on="id_event")
   # events = events[events.columns[:-1]]
+  print(len(events))
   user_log = user.merge(events, on="id_user", validate="one_to_many")
-
+  print(len(user_log))
   user_transaction = user_log.merge(event_transaction, on="id_log", how="left")
   user_transaction["nominal"] = user_transaction["nominal"].map(get_only_num)
   user_transaction["buyer"] = "buyer"
