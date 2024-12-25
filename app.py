@@ -194,7 +194,7 @@ def insert_to_visualization(visualization_worksheet, user, event_log, event_list
   user_transaction["buyer"] = "buyer"
   user_transaction.loc[user_transaction["diskon"].isna(), "buyer"] = "tidak"
 
-  # write_to_worksheet(visualization_worksheet, user_transaction)
+  write_to_worksheet(visualization_worksheet, user_transaction)
 
   return user_transaction
 
