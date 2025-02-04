@@ -299,7 +299,7 @@ def main():
 
       insert_to_unregisted_user(unregistered_user_worksheet, user, event_log, event_transaction)
       bar.progress(95, text="insert to visualization")
-      insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction)
+      # insert_to_visualization(visualization_worksheet, user, event_log, event_list, event_transaction)
       bar.progress(100, text="completed")
       bar.empty()
       st.write("Done")
